@@ -4,8 +4,8 @@ Plugin Name: Polaroid Gallery
 Plugin URI: http://www.mikkonen.info/polaroid_gallery/
 Description: Used to overlay images as polaroid pictures on the current page or post and uses WordPress Media Library.
 Version: 2.0.7
-Author: Jani Mikkonen
-Author URI: http://www.mikkonen.info
+Author: Jani Mikkonen (http://www.mikkonen.info)
+Contributor: Shemyakina Tatiana (http://life-thai.com)
 License: Unlicense
 TextDomain: polaroid-gallery
 DomainPath: /languages
@@ -179,23 +179,23 @@ function polaroid_gallery_options_do_page() {
 
 /** plugin code **/
 function polaroid_gallery_enqueue() {
-	if (!is_admin()) {
+	if (!is_admin() AND is_single()) {
 		global $wp_styles;
 		$polaroid_gallery_plugin_prefix = WP_PLUGIN_URL . "/polaroid-gallery/";
 
 		// add javascript to head
-		wp_enqueue_script('jquery.easing-1.3', ($polaroid_gallery_plugin_prefix.'js/jquery.easing-1.3.pack.js'), array('jquery'));
-		wp_enqueue_script('jquery.mousewheel-3.0.6', ($polaroid_gallery_plugin_prefix.'js/jquery.mousewheel-3.0.6.pack.js'), array('jquery'));
-		wp_enqueue_script('jquery.fancybox-1.3.4', ($polaroid_gallery_plugin_prefix.'js/jquery.fancybox-1.3.4.pack.js'), array('jquery'));
-		wp_enqueue_script('polaroid_gallery-2.0.7', ($polaroid_gallery_plugin_prefix.'js/polaroid_gallery-2.1.js'), array('jquery'));
+		wp_enqueue_script('jquery.easing-1.3', ('http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.easing-1.3.pack.js'), array('jquery'), false, true);
+		wp_enqueue_script('jquery.mousewheel-3.0.4', ('http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.mousewheel-3.0.4.pack.js'), array('jquery'), false, true);
+		wp_enqueue_script('jquery.fancybox-1.3.4', ('http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.pack.min.js'), array('jquery'), false, true);
+		wp_enqueue_script('polaroid_gallery-2.1', ($polaroid_gallery_plugin_prefix.'js/polaroid_gallery-2.1.js'), array('jquery'), false, true);
 
 		// add css to head
-		wp_enqueue_style('polaroid_gallery_fancybox-2.0.7', ($polaroid_gallery_plugin_prefix . 'css/jquery.fancybox-1.3.4.css'));
-		wp_enqueue_style('polaroid_gallery_style-2.0.7', ($polaroid_gallery_plugin_prefix . 'css/polaroid_gallery.css'));
+		wp_enqueue_style('polaroid_gallery_fancybox-2.1', ("http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.css"));
+		wp_enqueue_style('polaroid_gallery_style-2.1', ($polaroid_gallery_plugin_prefix . 'css/polaroid_gallery.css'));
 
 		// add IE css to head
-		wp_enqueue_style('polaroid_gallery_ie_style-2.0.7', ($polaroid_gallery_plugin_prefix . 'css/jquery.fancybox-old-ie.css'));
-		$wp_styles->add_data('polaroid_gallery_ie_style-2.0.7', 'conditional', 'lte IE 8');
+		wp_enqueue_style('polaroid_gallery_ie_style-2.1', ($polaroid_gallery_plugin_prefix . 'css/jquery.fancybox-old-ie.css'));
+		$wp_styles->add_data('polaroid_gallery_ie_style-2.1', 'conditional', 'lte IE 8');
 
 		// add localized javascript to head
 		$custom_text		= get_option('custom_text', 'no');
@@ -215,7 +215,7 @@ function polaroid_gallery_enqueue() {
 			'image' => $image_option,
 			'scratches' => $scratches,
 		);
-		wp_localize_script('polaroid_gallery-2.0.7', 'polaroid_gallery', $params);
+		wp_localize_script('polaroid_gallery-2.1', 'polaroid_gallery', $params);
 	}
 }
 
@@ -286,17 +286,22 @@ function polaroid_gallery_shortcode($output, $attr) {
 		<div class='polaroid-gallery galleryid-{$id}'>";
 	
 	$i = 0;
+	$galleryGroupId = rand();
 	foreach ( $attachments as $id => $attachment ) {
 		$image = wp_get_attachment_image_src($id, $size=$image_size, $icon = false); 
 		$thumb = wp_get_attachment_image_src($id, $size='thumbnail', $icon = false); 
 		$title = wptexturize(trim($attachment->post_title));
+		if ($title == "")
+		{
+			$title = wptexturize(trim($attachment->post_excerpt));
+		}
 		$alt = wptexturize(trim($attachment->post_excerpt));
 		$caption_class = '';
 		if($thumbnail_caption == 'show') {
 			$caption_class = ' showcaption';
 		}
 		$output .= '
-			<a href="'. $image[0] .'" title="'. $title .'" rel="polaroid_'. $post->ID .'" class="polaroid-gallery-item'. $caption_class .'"><span class="polaroid-gallery-image" title="'. $alt .'" style="background-image: url('. $thumb[0] .'); width: '. $thumb[1] .'px; height: '. $thumb[2] .'px;"></span></a>';
+			<a href="'. $image[0] .'" title="'. $title .'" rel="polaroid_'. $galleryGroupId .'" class="polaroid-gallery-item'. $caption_class .'"><span class="polaroid-gallery-image" title="'. $alt .'" style="background-image: url('. $thumb[0] .'); width: '. $thumb[1] .'px; height: '. $thumb[2] .'px;"></span></a>';
 		
 		if ( $columns > 0 && ++$i % $columns == 0 ){
 			$output .= '
