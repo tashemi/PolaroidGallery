@@ -40,7 +40,14 @@ function init() {
 		thumbsOption = (typeof(polaroid_gallery) !== 'undefined' ) ? polaroid_gallery.thumbnail : 'none',
 		imagesOption = (typeof(polaroid_gallery) !== 'undefined' ) ? polaroid_gallery.image : 'title3',
 		scratches = (typeof(polaroid_gallery) !== 'undefined' ) ? polaroid_gallery.scratches : 'yes';
-	
+	var cssHoverObj = {
+		'z-index' : '1998',
+		'-webkit-transform' : 'scale(1.15)',
+		'-moz-transform' :  'scale(1.15)',
+		'-ms-transform' : 'scale(1.15)',
+		'-o-transform' : 'scale(1.15)',
+		'transform' : 'scale(1.15)'
+		};
 	$(".polaroid-gallery a.polaroid-gallery-item").each(function(currentIndex) {
 		zIndex++;
 		var width = $(this).width(),
@@ -80,26 +87,18 @@ function init() {
 			'-o-transform' : randDeg,
 			'transform' : randDeg
 		};
-		var cssHoverObj = {
-			'z-index' : '1998',
-			'-webkit-transform' : 'scale(1.15)',
-			'-moz-transform' :  'scale(1.15)',
-			'-ms-transform' : 'scale(1.15)',
-			'-o-transform' : 'scale(1.15)',
-			'transform' : 'scale(1.15)'
-		};
+
 		var cssIeObj = {
 			'filter' : ieFilter,
 			'-ms-filter' : '"'+ ieFilter +'"'
 		};
+
+		$("span", this).after('<span class="polaroid-gallery-text">'+text+'</span>');
+		$("span.polaroid-gallery-text", this).width(width);
 		
 		if ($.browser.msie && parseInt($.browser.version, 10) < 9) {
-			$("span", this).after('<span class="polaroid-gallery-text">'+text+'</span>');
-			$("span.polaroid-gallery-text", this).width(width);
 			$(this).css(cssIeObj);
-		} else {
-			$("span", this).after('<span class="polaroid-gallery-text">'+text+'</span>');
-			$("span.polaroid-gallery-text", this).width(width);
+		} else {			
 			if(scratches === 'yes') {
 				$("span.polaroid-gallery-text", this).after('<span class="polaroid-gallery-scratches" style="background-position: '+randPos+';"></span>');
 			}

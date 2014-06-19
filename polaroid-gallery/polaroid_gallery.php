@@ -179,7 +179,7 @@ function polaroid_gallery_options_do_page() {
 
 /** plugin code **/
 function polaroid_gallery_enqueue() {
-	if (!is_admin() AND is_single()) {
+	if (!is_admin() AND (is_single() OR is_feed())) {
 		global $wp_styles;
 		$polaroid_gallery_plugin_prefix = WP_PLUGIN_URL . "/polaroid-gallery/";
 
@@ -192,6 +192,10 @@ function polaroid_gallery_enqueue() {
 		// add css to head
 		wp_enqueue_style('polaroid_gallery_fancybox-2.1', ("http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.css"));
 		wp_enqueue_style('polaroid_gallery_style-2.1', ($polaroid_gallery_plugin_prefix . 'css/polaroid_gallery.css'));
+
+		// add IE css to head
+		wp_enqueue_style('polaroid_gallery_ie_style-2.1', ($polaroid_gallery_plugin_prefix . 'css/polaroid_gallery-old-ie.css'));
+		$wp_styles->add_data('polaroid_gallery_ie_style-2.1', 'conditional', 'lte IE 8');
 
 		// add localized javascript to head
 		$custom_text		= get_option('custom_text', 'no');
@@ -282,7 +286,14 @@ function polaroid_gallery_shortcode($output, $attr) {
 		<div class='polaroid-gallery galleryid-{$id}'>";
 	
 	$i = 0;
+	
 	$galleryGroupId = rand();
+	
+	$caption_class = '';
+	if($thumbnail_caption == 'show') {
+		$caption_class = ' showcaption';
+	}
+
 	foreach ( $attachments as $id => $attachment ) {
 		$image = wp_get_attachment_image_src($id, $size=$image_size, $icon = false); 
 		$thumb = wp_get_attachment_image_src($id, $size='thumbnail', $icon = false); 
@@ -292,10 +303,7 @@ function polaroid_gallery_shortcode($output, $attr) {
 			$title = wptexturize(trim($attachment->post_excerpt));
 		}
 		$alt = wptexturize(trim($attachment->post_excerpt));
-		$caption_class = '';
-		if($thumbnail_caption == 'show') {
-			$caption_class = ' showcaption';
-		}
+		
 		$output .= '
 			<a href="'. $image[0] .'" title="'. $title .'" rel="polaroid_'. $galleryGroupId .'" class="polaroid-gallery-item'. $caption_class .'"><span class="polaroid-gallery-image" title="'. $alt .'" style="background-image: url('. $thumb[0] .'); width: '. $thumb[1] .'px; height: '. $thumb[2] .'px;"></span></a>';
 		
