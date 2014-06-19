@@ -193,10 +193,6 @@ function polaroid_gallery_enqueue() {
 		wp_enqueue_style('polaroid_gallery_fancybox-2.1', ("http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.css"));
 		wp_enqueue_style('polaroid_gallery_style-2.1', ($polaroid_gallery_plugin_prefix . 'css/polaroid_gallery.css'));
 
-		// add IE css to head
-		wp_enqueue_style('polaroid_gallery_ie_style-2.1', ($polaroid_gallery_plugin_prefix . 'css/jquery.fancybox-old-ie.css'));
-		$wp_styles->add_data('polaroid_gallery_ie_style-2.1', 'conditional', 'lte IE 8');
-
 		// add localized javascript to head
 		$custom_text		= get_option('custom_text', 'no');
 		$custom_text_value	= get_option('custom_text_value', 'Image');
