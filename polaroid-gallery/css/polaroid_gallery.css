@@ -129,3 +129,15 @@
 .polaroid-gallery a.showcaption:hover .polaroid-gallery-text {
 	visibility: visible !important;
 }
+/* IE6, IE7, IE8 */
+.polaroid-gallery a.polaroid-gallery-item {
+	border: 1px solid #ccc;
+	background-color: #fefefe !important;
+}
+.polaroid-gallery a.polaroid-gallery-item .polaroid-gallery-image {
+	position: relative;
+	border: 1px solid #ccc !important;
+}
+.polaroid-gallery a.polaroid-gallery-item .polaroid-gallery-image:before {
+	content: none;
+}
