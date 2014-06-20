@@ -1,13 +1,15 @@
 <?php
 /*
-Plugin Name: Polaroid Gallery
-Plugin URI: http://www.mikkonen.info/polaroid_gallery/
+Plugin Name: Polaroid Gallery Up
+Plugin URI: https://github.com/tashemi/PolaroidGallery
 Description: Used to overlay images as polaroid pictures on the current page or post and uses WordPress Media Library.
-Version: 2.0.7
-Author: Jani Mikkonen (http://www.mikkonen.info)
-Contributor: Shemyakina Tatiana (http://life-thai.com)
+Version: 1.0
+Author: Shemyakina Tatiana
+Author URI: http://www.life-thai.com
+Contributors: tashemi
+Donate link: http://goo.gl/qpiHxj
 License: Unlicense
-TextDomain: polaroid-gallery
+TextDomain: polaroid-gallery-up
 DomainPath: /languages
 */
 
@@ -40,7 +42,7 @@ For more information, please refer to <http://unlicense.org/>
 
 /** plugin init **/
 function polaroid_gallery_init() {
-	load_plugin_textdomain('polaroid-gallery', false, dirname(plugin_basename(__FILE__)) . '/languages' );
+	load_plugin_textdomain('polaroid-gallery-up', false, dirname(plugin_basename(__FILE__)) . '/languages' );
 }
 add_action('init', 'polaroid_gallery_init');
 
@@ -181,21 +183,21 @@ function polaroid_gallery_options_do_page() {
 function polaroid_gallery_enqueue() {
 	if (!is_admin() AND (is_single() OR is_feed())) {
 		global $wp_styles;
-		$polaroid_gallery_plugin_prefix = WP_PLUGIN_URL . "/polaroid-gallery/";
+		$polaroid_gallery_plugin_prefix = WP_PLUGIN_URL . "/polaroid-gallery-up/";
 
 		// add javascript to head
 		wp_enqueue_script('jquery.easing-1.3', ('http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.easing-1.3.pack.js'), array('jquery'), false, true);
 		wp_enqueue_script('jquery.mousewheel-3.0.4', ('http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.mousewheel-3.0.4.pack.js'), array('jquery'), false, true);
 		wp_enqueue_script('jquery.fancybox-1.3.4', ('http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.pack.min.js'), array('jquery'), false, true);
-		wp_enqueue_script('polaroid_gallery-2.1', ($polaroid_gallery_plugin_prefix.'js/polaroid_gallery-2.1.js'), array('jquery'), false, true);
+		wp_enqueue_script('polaroid_gallery_up-1.0', ($polaroid_gallery_plugin_prefix.'js/polaroid_gallery-2.1.js'), array('jquery'), false, true);
 
 		// add css to head
-		wp_enqueue_style('polaroid_gallery_fancybox-2.1', ("http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.css"));
-		wp_enqueue_style('polaroid_gallery_style-2.1', ($polaroid_gallery_plugin_prefix . 'css/polaroid_gallery.css'));
+		wp_enqueue_style('polaroid_gallery_fancybox-1.0', ("http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.css"));
+		wp_enqueue_style('polaroid_gallery_up_style-1.0', ($polaroid_gallery_plugin_prefix . 'css/polaroid_gallery.css'));
 
 		// add IE css to head
-		wp_enqueue_style('polaroid_gallery_ie_style-2.1', ($polaroid_gallery_plugin_prefix . 'css/polaroid_gallery-old-ie.css'));
-		$wp_styles->add_data('polaroid_gallery_ie_style-2.1', 'conditional', 'lte IE 8');
+		wp_enqueue_style('polaroid_gallery_up_ie_style-1.0', ($polaroid_gallery_plugin_prefix . 'css/polaroid_gallery-old-ie.css'));
+		$wp_styles->add_data('polaroid_gallery_up_ie_style-1.0', 'conditional', 'lte IE 8');
 
 		// add localized javascript to head
 		$custom_text		= get_option('custom_text', 'no');
@@ -215,7 +217,7 @@ function polaroid_gallery_enqueue() {
 			'image' => $image_option,
 			'scratches' => $scratches,
 		);
-		wp_localize_script('polaroid_gallery-2.1', 'polaroid_gallery', $params);
+		wp_localize_script('polaroid_gallery_up-1.0', 'polaroid_gallery', $params);
 	}
 }
 
