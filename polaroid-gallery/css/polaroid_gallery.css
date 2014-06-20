@@ -129,3 +129,10 @@
 .polaroid-gallery a.showcaption:hover .polaroid-gallery-text {
 	visibility: visible !important;
 }
+#fancybox-title-over {
+background: #fff; 
+font-family: "GoodDogRegular", Georgia;
+font-size:22px;
+text-align:left;
+padding:4px;
+}
