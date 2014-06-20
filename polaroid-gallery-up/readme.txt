@@ -56,7 +56,8 @@ To do a manual installation of the plugin, please follow these steps.
 = 1.0 =
 
 * Forked from Polaroid Gallery
-* Most of js libraries were put to CDNjs.com
+* Local fancybox files replaced with loading files on CDNjs.com
+* "GoogDogFont" replaced with "Poiret One" from Google Fonts.
 * Fixeg bug with showing images from all galleries on the page.
 * Prevent loading plugin's libraries if pages are displayed. Plugin loads only for single post
 * Localized to russian language.
