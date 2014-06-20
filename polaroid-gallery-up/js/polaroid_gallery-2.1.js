@@ -34,20 +34,21 @@ jQuery.extend({
 
 function init() {
 	var $ = jQuery.noConflict(),
-		zIndex = 1000,
+		zIndex = 900,
 		imagesCount = $('.polaroid-gallery a.polaroid-gallery-item').size(),
 		imageStr = (typeof(polaroid_gallery) !== 'undefined' ) ? polaroid_gallery.text2image : 'Image',
 		thumbsOption = (typeof(polaroid_gallery) !== 'undefined' ) ? polaroid_gallery.thumbnail : 'none',
 		imagesOption = (typeof(polaroid_gallery) !== 'undefined' ) ? polaroid_gallery.image : 'title3',
 		scratches = (typeof(polaroid_gallery) !== 'undefined' ) ? polaroid_gallery.scratches : 'yes';
 	var cssHoverObj = {
-		'z-index' : '1998',
+		'z-index' : '1001',
 		'-webkit-transform' : 'scale(1.15)',
 		'-moz-transform' :  'scale(1.15)',
 		'-ms-transform' : 'scale(1.15)',
 		'-o-transform' : 'scale(1.15)',
 		'transform' : 'scale(1.15)'
 		};
+	var isThisOldIe = ($.browser.msie && parseInt($.browser.version, 10) < 9);
 	$(".polaroid-gallery a.polaroid-gallery-item").each(function(currentIndex) {
 		zIndex++;
 		var width = $(this).width(),
@@ -96,11 +97,12 @@ function init() {
 		$("span", this).after('<span class="polaroid-gallery-text">'+text+'</span>');
 		$("span.polaroid-gallery-text", this).width(width);
 		
-		if ($.browser.msie && parseInt($.browser.version, 10) < 9) {
+		if (isThisOldIe) {
 			$(this).css(cssIeObj);
 		} else {			
 			if(scratches === 'yes') {
-				$("span.polaroid-gallery-text", this).after('<span class="polaroid-gallery-scratches" style="background-position: '+randPos+';"></span>');
+				$("span.polaroid-gallery-text", this)
+				.after('<span class="polaroid-gallery-scratches" style="background-position: '+randPos+';"></span>');
 			}
 		}
 		
@@ -115,7 +117,7 @@ function init() {
 	$(".polaroid-gallery").css('visibility', 'visible');
 	
 	$(".polaroid-gallery a.polaroid-gallery-item").fancybox({
-		'padding'			: 20,
+		'padding'			: 16,
 		'margin'			: 40,
 		'transitionIn'		: 'elastic',
 		'transitionOut'		: 'elastic',
