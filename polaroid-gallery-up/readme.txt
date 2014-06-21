@@ -9,7 +9,7 @@ Stable tag: 1.0
 License: Unlicense
 
 Polaroid Gallery Up is a CSS3 & jQuery Image Gallery plugin for WordPress Media Library.
-Polaroid Gallery Up is fork of [Polaroid Gallery](http://life-thai.com/chem-horosha-shri-lanka/) by [janisto](http://profiles.wordpress.org/janisto/)
+Polaroid Gallery Up is fork of [Polaroid Gallery](http://wordpress.org/plugins/polaroid-gallery/) by [janisto](http://profiles.wordpress.org/janisto/)
 
 == Description ==
 
@@ -24,11 +24,11 @@ Polaroid Gallery Up has translations for the following languages:
 
 Use [Regenerate Thumbnails](http://wordpress.org/extend/plugins/regenerate-thumbnails/) plugin to regenerate thumbnails for all images that you have uploaded to your blog. 
 
-Plugin in use: [Demo1](http://wp.mikkonen.info/summer-2010/) and [Demo2](http://life-thai.com/chem-horosha-shri-lanka/)
+Plugin in use: [Demo](http://life-thai.com/chem-horosha-shri-lanka/)
 
 For more information visit the [github page of plugin](https://github.com/tashemi/PolaroidGallery) and [WordPress Gallery support](http://en.support.wordpress.com/images/gallery/).
 
-Would you like to add your language to the list? Contact  [tashemi](info@life-thai.com)
+Would you like to add your language to the list? Contact me [tashemi](info@life-thai.com)
 
 == Installation ==
 
@@ -61,6 +61,7 @@ To do a manual installation of the plugin, please follow these steps.
 * Fixeg bug with showing images from all galleries on the page.
 * Prevent loading plugin's libraries if pages are displayed. Plugin loads only for single post
 * Localized to russian language.
+* Support mobile phones
 
 
 == Screenshots ==

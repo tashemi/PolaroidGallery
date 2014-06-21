@@ -1,12 +1,12 @@
 Polaroid Gallery Up
 ===================
 
-WP plugin for showing photos as polaroid gallery.
-Author of this plugin is janisto. Original plugin directory in wordpress plugins gallery is http://wordpress.org/plugins/polaroid-gallery/
-Plugin was not maintained since 2 years. I did not find way to reach autor of plugin to add my fixes. 
-Thanks to autor plugin is [unlicensed](http://unlicense.org/). So I've forked it. 
+Polaroid Gallery Up is a CSS3 & jQuery Image Gallery plugin for WordPress Media Library.
 
 ![screenshot](https://raw.github.com/tashemi/PolaroidGallery/master/header.png)
+
+Polaroid Gallery Up is fork of [Polaroid Gallery](http://wordpress.org/plugins/polaroid-gallery/) by [janisto](http://profiles.wordpress.org/janisto/). 
+Original plugin was not maintained since 2 years. Thanks to autor plugin is [unlicensed](http://unlicense.org/).
 
 What's new: 
 
