@@ -185,20 +185,28 @@ function polaroid_gallery_enqueue() {
 		global $wp_styles;
 		$polaroid_gallery_plugin_prefix = WP_PLUGIN_URL . "/polaroid-gallery-up/";
 
-		// add javascript to head
-		wp_enqueue_script('jquery.easing-1.3', ('http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.easing-1.3.pack.js'), array('jquery'), false, true);
-		wp_enqueue_script('jquery.mousewheel-3.0.4', ('http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.mousewheel-3.0.4.pack.js'), array('jquery'), false, true);
-		wp_enqueue_script('jquery.fancybox-1.3.4', ('http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.pack.min.js'), array('jquery'), false, true);
-		wp_enqueue_script('polaroid_gallery_up-1.0', ($polaroid_gallery_plugin_prefix.'js/polaroid_gallery-2.1.js'), array('jquery'), false, true);
+		require plugin_dir_path(__FILE__) . 'Mobile_Detect.php';
+		$detect = new Mobile_Detect;
+		// detect PC user 
+		if (!$detect->isMobile() OR $detect->isTablet()){
+			// add javascript to head
+			wp_enqueue_script('jquery.easing-1.3', ('http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.easing-1.3.pack.js'), array('jquery'), false, true);
+			wp_enqueue_script('jquery.mousewheel-3.0.4', ('http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.mousewheel-3.0.4.pack.js'), array('jquery'), false, true);
+			wp_enqueue_script('jquery.fancybox-1.3.4', ('http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.pack.min.js'), array('jquery'), false, true);
+			wp_enqueue_script('polaroid_gallery_up-1.0', ($polaroid_gallery_plugin_prefix.'js/polaroid_gallery-2.1.js'), array('jquery'), false, true);
 
-		// add css to head
-		wp_enqueue_style('polaroid_gallery_fancybox-1.0', ("http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.css"));
-		wp_enqueue_style('polaroid_gallery_up_style-1.0', ($polaroid_gallery_plugin_prefix . 'css/polaroid_gallery.css'));
+			// add css to head
+			wp_enqueue_style('polaroid_gallery_fancybox-1.0', ("http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.css"));
+			wp_enqueue_style('polaroid_gallery_up_style-1.0', ($polaroid_gallery_plugin_prefix . 'css/polaroid_gallery.css'));
 
-		// add IE css to head
-		wp_enqueue_style('polaroid_gallery_up_ie_style-1.0', ($polaroid_gallery_plugin_prefix . 'css/polaroid_gallery-old-ie.css'));
-		$wp_styles->add_data('polaroid_gallery_up_ie_style-1.0', 'conditional', 'lte IE 8');
-
+			// add IE css to head
+			wp_enqueue_style('polaroid_gallery_up_ie_style-1.0', ($polaroid_gallery_plugin_prefix . 'css/polaroid_gallery-old-ie.css'));
+			$wp_styles->add_data('polaroid_gallery_up_ie_style-1.0', 'conditional', 'lte IE 8');
+		}else
+		{
+			// detect mobile user
+			wp_enqueue_style('polaroid_gallery_up_style-1.0', ($polaroid_gallery_plugin_prefix . 'css/polaroid_gallery_mobile.css'));
+		}
 		// add localized javascript to head
 		$custom_text		= get_option('custom_text', 'no');
 		$custom_text_value	= get_option('custom_text_value', 'Image');
@@ -280,6 +288,20 @@ function polaroid_gallery_shortcode($output, $attr) {
 		return $output;
 	}
 	
+	require_once $polaroid_gallery_plugin_prefix . 'Mobile_Detect.php';
+	$detect = new Mobile_Detect;
+	// detect PC user 
+	if (!$detect->isMobile() OR $detect->isTablet()){
+		$output = makeGalleryForPCandTablets();
+	}else
+	{
+		$output = makeGalleryForPhones();
+	}
+
+	return $output;	
+}
+
+function makeGalleryForPCandTablets(){
 	$columns = intval($columns);
 	if( $ignore_columns == 'yes' ) {
 		$columns = 0;
@@ -322,6 +344,42 @@ function polaroid_gallery_shortcode($output, $attr) {
 		$output .= '
 			<br style="clear: both;" />';
 	}
+	$output .= "
+		</div>\n";
+	
+	return $output;
+}
+
+function makeGalleryForPhones(){
+	$output .= "
+		<div class='polaroid-gallery galleryid-{$id}'>";
+	
+	$caption_class = '';
+	if($thumbnail_caption == 'show') {
+		$caption_class = ' showcaption';
+	}
+
+	foreach ( $attachments as $id => $attachment ) {
+		$image = wp_get_attachment_image_src($id, $size=$image_size, $icon = false); 
+		$title = wptexturize(trim($attachment->post_title));
+		if ($title == "")
+		{
+			$title = wptexturize(trim($attachment->post_excerpt));
+		}
+		$alt = wptexturize(trim($attachment->post_excerpt));
+		
+		$output .= '
+			<a class="polaroid-gallery-item'. $caption_class .'">
+				<img id="polaroid-gallery-image" src='. $image[0] .' style="width:'.$image[1].'px;" title="'. $alt .'" />
+				<span class="polaroid-gallery-text">'.$title.'
+				</span>
+			</a>';
+
+			$output .= '
+			<br style="clear: both;" />';
+
+	}
+
 	$output .= "
 		</div>\n";
 	
