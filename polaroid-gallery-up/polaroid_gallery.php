@@ -292,16 +292,16 @@ function polaroid_gallery_shortcode($output, $attr) {
 	$detect = new Mobile_Detect;
 	// detect PC user 
 	if (!$detect->isMobile() OR $detect->isTablet()){
-		$output = makeGalleryForPCandTablets();
+		$output = makeGalleryForPCandTablets($attachments, $thumbnail_caption, $id, $ignore_columns, $columns);
 	}else
 	{
-		$output = makeGalleryForPhones();
+		$output = makeGalleryForPhones($attachments, $thumbnail_caption, $id);
 	}
 
 	return $output;	
 }
 
-function makeGalleryForPCandTablets(){
+function makeGalleryForPCandTablets($attachments, $thumbnail_caption, $id, $ignore_columns, $columns){
 	$columns = intval($columns);
 	if( $ignore_columns == 'yes' ) {
 		$columns = 0;
@@ -350,7 +350,7 @@ function makeGalleryForPCandTablets(){
 	return $output;
 }
 
-function makeGalleryForPhones(){
+function makeGalleryForPhones($attachments, $thumbnail_caption, $id){
 	$output .= "
 		<div class='polaroid-gallery galleryid-{$id}'>";
 	
