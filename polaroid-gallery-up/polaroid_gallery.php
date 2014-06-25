@@ -240,6 +240,7 @@ function polaroid_gallery_enqueue() {
 }
 
 function polaroid_gallery_shortcode($output, $attr) {
+	if (!isTimeToLoadGallery()) return $output;
 	global $post, $wp_locale;
 	
 	// We're trusting author input, so let's at least make sure it looks like a valid orderby statement
@@ -395,7 +396,9 @@ function makeGalleryForPhones($attachments, $thumbnail_caption, $id){
 }
 
 function isMobileDetected() {
-	require_once plugin_dir_path(__FILE__) . 'Mobile_Detect.php';
+	if (!class_exists("Mobile_Detect")) {
+		require_once plugin_dir_path(__FILE__) . 'Mobile_Detect.php';
+	}
 	$detect = new Mobile_Detect;
 	// detect PC user 
 	return ($detect->isMobile() AND !$detect->isTablet());
