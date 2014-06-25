@@ -48,18 +48,19 @@ add_action('init', 'polaroid_gallery_init');
 
 /** admin code **/
 function polaroid_gallery_options_init() {
-	register_setting('polaroid_gallery_options', 'image_size');
-	register_setting('polaroid_gallery_options', 'ignore_columns');
-	register_setting('polaroid_gallery_options', 'custom_text');
-	register_setting('polaroid_gallery_options', 'custom_text_value');
-	register_setting('polaroid_gallery_options', 'thumbnail_caption');
-	register_setting('polaroid_gallery_options', 'thumbnail_option');
-	register_setting('polaroid_gallery_options', 'image_option');
-	register_setting('polaroid_gallery_options', 'scratches');
+	register_setting('polaroid_gallery_up_options', 'image_size');
+	register_setting('polaroid_gallery_up_options', 'ignore_columns');
+	register_setting('polaroid_gallery_up_options', 'custom_text');
+	register_setting('polaroid_gallery_up_options', 'custom_text_value');
+	register_setting('polaroid_gallery_up_options', 'thumbnail_caption');
+	register_setting('polaroid_gallery_up_options', 'thumbnail_option');
+	register_setting('polaroid_gallery_up_options', 'image_option');
+	register_setting('polaroid_gallery_up_options', 'scratches');
+	register_setting('polaroid_gallery_up_options', 'show_in_pages');
 }
 
 function polaroid_gallery_options_add_page() {
-	add_options_page('Polaroid Gallery Options', 'Polaroid Gallery', 'manage_options', 'polaroid_gallery_options', 'polaroid_gallery_options_do_page');
+	add_options_page('Polaroid Gallery Options', 'Polaroid Gallery', 'manage_options', 'polaroid_gallery_up_options', 'polaroid_gallery_options_do_page');
 }
 
 add_action('admin_init', 'polaroid_gallery_options_init');
@@ -69,10 +70,10 @@ function polaroid_gallery_options_do_page() {
 	?>
 	<div class="wrap">
 		<?php screen_icon(); ?>
-		<h2><?php _e('Polaroid Gallery Options', 'polaroid-gallery') ?></h2>
+		<h2><?php _e('Polaroid Gallery Up Options', 'polaroid-gallery') ?></h2>
 		<form method="post" action="options.php">
 			<?php 
-			settings_fields('polaroid_gallery_options');
+			settings_fields('polaroid_gallery_up_options');
 			$image_size			= get_option('image_size', 'large'); 
 			$ignore_columns		= get_option('ignore_columns', 'no'); 
 			$custom_text		= get_option('custom_text', 'no');
@@ -81,6 +82,7 @@ function polaroid_gallery_options_do_page() {
 			$thumbnail_option	= get_option('thumbnail_option', 'none'); 
 			$image_option		= get_option('image_option', 'title3');
 			$scratches			= get_option('scratches', 'yes');
+			$show_in_pages		= get_option('show_in_pages', 'no');
 			?>
 			<h3><?php _e('Gallery Settings', 'polaroid-gallery'); ?></h3>
 			<p><?php _e('Choose the image size to display when user clicks the thumbnail. Images will be scaled to fit the screen if they are too large.', 'polaroid-gallery'); ?></p>
@@ -104,6 +106,16 @@ function polaroid_gallery_options_do_page() {
 						<legend class="screen-reader-text"><span><?php _e('Ignore Gallery columns', 'polaroid-gallery') ?></span></legend>
 						<label title='<?php _e("No", 'polaroid-gallery'); ?>'><input type='radio' name='ignore_columns' value='no' <?php checked('no', $ignore_columns); ?>/> <?php _e("No", 'polaroid-gallery'); ?></label><br />
 						<label title='<?php _e("Yes", 'polaroid-gallery'); ?>'><input type='radio' name='ignore_columns' value='yes' <?php checked('yes', $ignore_columns); ?>/> <?php _e("Yes (good for fluid layouts)", 'polaroid-gallery'); ?></label><br />
+					</fieldset>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><?php _e('Load gallery in list of posts', 'polaroid-gallery') ?></th>
+				<td>
+					<fieldset>
+						<legend class="screen-reader-text"><span><?php _e('Load gallery in list of posts', 'polaroid-gallery') ?></span></legend>
+						<label title='<?php _e("No", 'polaroid-gallery'); ?>'><input type='radio' name='show_in_pages' value='no' <?php checked('no', $show_in_pages); ?>/> <?php _e("No (good for blogs where only excerpt of post is displayed in the posts list)", 'polaroid-gallery'); ?></label><br />
+						<label title='<?php _e("Yes", 'polaroid-gallery'); ?>'><input type='radio' name='show_in_pages' value='yes' <?php checked('yes', $show_in_pages); ?>/> <?php _e("Yes (good for blogs where posts are displayed full in the list of posts)", 'polaroid-gallery'); ?></label><br />
 					</fieldset>
 				</td>
 			</tr>
@@ -181,14 +193,12 @@ function polaroid_gallery_options_do_page() {
 
 /** plugin code **/
 function polaroid_gallery_enqueue() {
-	if (!is_admin() AND (is_single() OR is_feed())) {
+	if (isTimeToLoadGallery()) {
 		global $wp_styles;
 		$polaroid_gallery_plugin_prefix = WP_PLUGIN_URL . "/polaroid-gallery-up/";
 
-		require plugin_dir_path(__FILE__) . 'Mobile_Detect.php';
-		$detect = new Mobile_Detect;
 		// detect PC user 
-		if (!$detect->isMobile() OR $detect->isTablet()){
+		if (!isMobileDetected()){
 			// add javascript to head
 			wp_enqueue_script('jquery.easing-1.3', ('http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.easing-1.3.pack.js'), array('jquery'), false, true);
 			wp_enqueue_script('jquery.mousewheel-3.0.4', ('http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.mousewheel-3.0.4.pack.js'), array('jquery'), false, true);
@@ -288,10 +298,8 @@ function polaroid_gallery_shortcode($output, $attr) {
 		return $output;
 	}
 	
-	require_once $polaroid_gallery_plugin_prefix . 'Mobile_Detect.php';
-	$detect = new Mobile_Detect;
 	// detect PC user 
-	if (!$detect->isMobile() OR $detect->isTablet()){
+	if (!isMobileDetected()){
 		$output = makeGalleryForPCandTablets($attachments, $thumbnail_caption, $id, $ignore_columns, $columns);
 	}else
 	{
@@ -384,6 +392,18 @@ function makeGalleryForPhones($attachments, $thumbnail_caption, $id){
 		</div>\n";
 	
 	return $output;
+}
+
+function isMobileDetected() {
+	require_once plugin_dir_path(__FILE__) . 'Mobile_Detect.php';
+	$detect = new Mobile_Detect;
+	// detect PC user 
+	return ($detect->isMobile() AND !$detect->isTablet());
+}
+
+function isTimeToLoadGallery(){
+	$show_in_pages = (get_option('show_in_pages', 'no') === 'yes');
+	return (!is_admin() AND ($show_in_pages OR is_single() OR is_feed()));
 }
 
 add_action('wp_enqueue_scripts', 'polaroid_gallery_enqueue');
